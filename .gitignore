@@ -1,0 +1,44 @@
+# .gitignore for WordPress + MySQL Docker Compose Project
+
+# Environment files - contains sensitive credentials
+.env
+.env.local
+.env.*.local
+
+# Docker volumes data - generated at runtime, very large
+# These folders appear if you use bind mounts instead of named volumes
+db_data/
+wordpress_data/
+mysql_data/
+
+# Docker Compose override files - for local development customization
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*.backup

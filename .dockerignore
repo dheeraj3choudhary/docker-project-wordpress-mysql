@@ -1,0 +1,41 @@
+# .dockerignore for WordPress + MySQL Docker Compose Project
+# This file tells Docker which files/folders to exclude when building images
+# Note: This project uses pre-built images (wordpress:latest and mysql:8.0)
+# so .dockerignore has minimal impact, but included for best practices
+
+# Git files - no need to copy version control files
+.git
+.gitignore
+.gitattributes
+
+# Documentation files - not needed inside containers
+README.md
+LICENSE
+*.md
+
+# Docker files - don't copy Docker configs into the image
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Environment files - sensitive data should not be in images
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files - development tools
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs - generated at runtime, don't need to copy
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

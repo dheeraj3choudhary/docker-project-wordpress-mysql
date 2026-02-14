@@ -1,0 +1,107 @@
+# Docker Compose version - using version 3.8 for modern features and wide compatibility
+version: '3.8'
+
+# Services definition - each service is a container
+services:
+  
+  # Database Service - MySQL container
+  db:
+    # Official MySQL 8.0 image from Docker Hub
+    image: mysql:8.0
+    
+    # Container name for easy identification
+    container_name: wordpress-mysql
+    
+    # Restart policy - always restart container if it stops
+    restart: always
+    
+    # Environment variables for MySQL configuration
+    environment:
+      # Root password for MySQL (change this in production!)
+      MYSQL_ROOT_PASSWORD: rootpassword
+      
+      # Database name that will be created automatically
+      MYSQL_DATABASE: wordpress_db
+      
+      # MySQL user that WordPress will use
+      MYSQL_USER: wordpress_user
+      
+      # Password for the WordPress MySQL user
+      MYSQL_PASSWORD: wordpress_password
+    
+    # Volume mapping - persists MySQL data even after container stops
+    volumes:
+      # Named volume 'db_data' maps to MySQL's data directory
+      - db_data:/var/lib/mysql
+    
+    # Network configuration
+    networks:
+      - wordpress-network
+    
+    # Health check to ensure MySQL is ready before WordPress starts
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # WordPress Service - WordPress application container
+  wordpress:
+    # Official WordPress image with Apache web server
+    image: wordpress:latest
+    
+    # Container name for easy identification
+    container_name: wordpress-app
+    
+    # Restart policy - always restart container if it stops
+    restart: always
+    
+    # Port mapping - maps host port 8080 to container port 80
+    # Access WordPress at http://localhost:8080
+    ports:
+      - "8080:80"
+    
+    # Environment variables for WordPress configuration
+    environment:
+      # Database host - uses service name 'db' as hostname
+      WORDPRESS_DB_HOST: db:3306
+      
+      # Database name - must match MYSQL_DATABASE in db service
+      WORDPRESS_DB_NAME: wordpress_db
+      
+      # Database user - must match MYSQL_USER in db service
+      WORDPRESS_DB_USER: wordpress_user
+      
+      # Database password - must match MYSQL_PASSWORD in db service
+      WORDPRESS_DB_PASSWORD: wordpress_password
+    
+    # Volume mapping - persists WordPress files (themes, plugins, uploads)
+    volumes:
+      # Named volume 'wordpress_data' maps to WordPress installation directory
+      - wordpress_data:/var/www/html
+    
+    # Dependency configuration - ensures db starts before wordpress
+    depends_on:
+      db:
+        # Wait for db health check to pass before starting WordPress
+        condition: service_healthy
+    
+    # Network configuration
+    networks:
+      - wordpress-network
+
+# Named volumes definition - Docker manages these volumes
+volumes:
+  # Volume for MySQL database files
+  db_data:
+    driver: local
+  
+  # Volume for WordPress application files
+  wordpress_data:
+    driver: local
+
+# Networks definition - isolates container communication
+networks:
+  # Custom bridge network for WordPress and MySQL to communicate
+  wordpress-network:
+    driver: bridge
