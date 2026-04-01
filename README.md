@@ -1,6 +1,6 @@
 <div align="center">
 
-# WordPress with MySQL - Docker Compose Setup
+# Build WordPress-App with MySQL Using Docker-Compose
 
 A beginner-friendly Docker Compose project that demonstrates multi-container orchestration by deploying WordPress with MySQL database. Perfect for DevOps and Cloud engineers learning Docker containerization and container networking.
 
